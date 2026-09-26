@@ -1,5 +1,7 @@
 # Interview Bot — Phases 1–5
 
+Gemini report compatibility: requests now use a reduced JSON schema (types, required fields, enums and references). Nested length/count/numeric constraints caused the configured Gemini model to reject the report schema with HTTP 400. All original constraints are still enforced by Pydantic after generation, and report evidence references are still validated before saving. The rejected and corrected schemas were checked with synthetic data; regression tests require no external API calls. Restart the backend after this update, then retry a failed report; saved interview answers are preserved.
+
 ## Recommended backend startup (prevents duplicate-server errors)
 
 From the workspace root, run:

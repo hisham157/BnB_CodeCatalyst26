@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, inspect, text
 from app.database import initialize_database
 from app.models import Interview
 from app.schemas import FirstQuestion, InterviewPlan, TurnDecision
-from app.services.gemini_service import AIServiceError, GeminiService
+from app.services.gemini_service import AIServiceError, GeminiService, generation_schema
 from app.services.interview_engine import InterviewEngine, get_interview_engine
 from tests.test_interviews import client, create, docx_bytes
 
@@ -182,7 +182,7 @@ def test_gemini_failures_without_network(monkeypatch, failure, expected):
         def __exit__(self, *args):
             pass
         def generate_content(self, **kwargs):
-            assert kwargs["config"].response_json_schema == FirstQuestion.model_json_schema()
+            assert kwargs["config"].response_json_schema == generation_schema(FirstQuestion)
             assert kwargs["config"].response_schema is None
             if failure == "rate":
                 raise errors.ClientError(429, {"error": {"message": "Quota exceeded"}})

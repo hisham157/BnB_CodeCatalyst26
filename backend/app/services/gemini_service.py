@@ -24,6 +24,28 @@ class AIServiceError(Exception):
         self.status_code = status_code
 
 
+def generation_schema(schema):
+    """Keep the wire grammar small; Pydantic still enforces every constraint locally.
+
+    Nested bounded arrays/strings can make Gemini reject an otherwise valid JSON
+    schema with HTTP 400. Types, required fields, enums and references are retained.
+    """
+    omitted = {"title", "default", "minLength", "maxLength", "minItems", "maxItems", "minimum", "maximum"}
+
+    def simplify(value):
+        if isinstance(value, list):
+            return [simplify(item) for item in value]
+        if not isinstance(value, dict):
+            return value
+        return {
+            key: ({name: simplify(item) for name, item in child.items()}
+                  if key in {"properties", "$defs"} else simplify(child))
+            for key, child in value.items() if key not in omitted
+        }
+
+    return simplify(schema.model_json_schema())
+
+
 class GeminiService:
     def ensure_configured(self):
         key = os.getenv("GEMINI_API_KEY", "").strip()
@@ -46,7 +68,7 @@ class GeminiService:
                     config=types.GenerateContentConfig(
                         system_instruction=SYSTEM_INSTRUCTION,
                         response_mime_type="application/json",
-                        response_json_schema=schema.model_json_schema(),
+                        response_json_schema=generation_schema(schema),
                         temperature=0.4,
                     ),
                 )
