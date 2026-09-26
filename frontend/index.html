@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#172c32" />
+    <title>AI Interview Setup</title>
+  </head>
+  <body>
+    <div id="root">
+      <main style="max-width:640px;margin:70px auto;padding:24px;font-family:system-ui;line-height:1.6">
+        <h1>InterviewLens</h1>
+        <p id="launcher-status">Opening the interview app…</p>
+        <div id="launcher-help" hidden>
+          <p>From <strong>interview-bot/frontend</strong>, run:</p>
+          <pre>npm.cmd install
+npm.cmd run live</pre>
+          <p>Keep that terminal open while editing. Then refresh this page.</p>
+          <button onclick="location.reload()">Try again</button>
+        </div>
+        <noscript>Enable JavaScript to use InterviewLens.</noscript>
+      </main>
+    </div>
+    <!-- VITE_APP_ENTRY -->
+    <script>
+      // Vite marks transformed pages. Plain Live Server gets this launcher instead.
+      if (!document.documentElement.hasAttribute('data-vite-app')) {
+        (async function () {
+          var status = document.getElementById('launcher-status');
+          try {
+            if (location.protocol === 'file:') throw new Error('Open this file with Live Server, not directly from disk.');
+            var target = new URL('./dist/index.html', location.href);
+            var response = await fetch(target, { cache: 'no-store' });
+            if (!response.ok) throw new Error('The frontend build is missing.');
+            var html = await response.text();
+            if (!html.includes('data-vite-app')) throw new Error('The frontend build needs to be updated.');
+            target.search = location.search;
+            target.hash = location.hash;
+            location.replace(target.href);
+          } catch (error) {
+            status.textContent = error.message;
+            document.getElementById('launcher-help').hidden = false;
+          }
+        })();
+      }
+    </script>
+  </body>
+</html>

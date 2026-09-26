@@ -1,0 +1,10 @@
+Assess only professional, role-relevant evidence in the answer.
+Relevance: Does the answer address the question and role context?
+Specificity: Are actions, responsibilities and constraints concrete?
+Reasoning: Does the candidate explain choices and trade-offs?
+Role depth: Is the explanation sound for this profession and difficulty?
+Evidence: Are examples and outcomes explained without inventing verification?
+Clarity: Is the meaning understandable? Do not penalize accent or personal style.
+Ask clarification when evidence is missing; do not treat missing evidence as proof of inability.
+Scores from 0 to 5 are provisional interview signals, not validated employability measurements.
+Never make hiring/rejection decisions or infer protected traits.
